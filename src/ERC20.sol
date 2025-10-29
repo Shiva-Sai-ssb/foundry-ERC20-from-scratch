@@ -40,4 +40,29 @@ contract ERC20 {
         }
         _;
     }
+
+    // Public Functions
+    function mint(address to, uint256 amount) public onlyOwner {
+        if (to == address(0)) {
+            revert ERC20__MintToZeroAddress();
+        }
+        if (s_totalSupply + amount > MAX_SUPPLY) {
+            revert ERC20__MaxSupplyExceeded();
+        }
+
+        s_totalSupply += amount;
+        s_balances[to] += amount;
+
+        emit Transfer(address(0), to, amount);
+    }
+
+    function burn(uint256 amount) public {
+        if (s_balances[msg.sender] < amount) {
+            revert ERC20__InsufficientBalance();
+        }
+
+        s_balances[msg.sender] -= amount;
+        s_totalSupply -= amount;
+        emit Transfer(msg.sender, address(0), amount);
+    }
 }
