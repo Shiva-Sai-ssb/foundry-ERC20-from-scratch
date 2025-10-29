@@ -65,4 +65,32 @@ contract ERC20 {
         s_totalSupply -= amount;
         emit Transfer(msg.sender, address(0), amount);
     }
+
+    function transfer(address to, uint256 amount) public returns (bool) {
+        if (s_balances[msg.sender] < amount) {
+            revert ERC20__InsufficientBalance();
+        }
+        if (to == address(0)) {
+            revert ERC20__TransferToZeroAddress();
+        }
+
+        s_balances[msg.sender] -= amount;
+        s_balances[to] += amount;
+
+        emit Transfer(msg.sender, to, amount);
+        return true;
+    }
+
+    function approve(address spender, uint256 amount) public returns (bool) {
+        if (s_balances[msg.sender] < amount) {
+            revert ERC20__InsufficientBalance();
+        }
+        if (spender == address(0)) {
+            revert ERC20__ApproveToZeroAddress();
+        }
+
+        s_allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+        return true;
+    }
 }
