@@ -23,4 +23,21 @@ contract ERC20 {
     mapping(address => uint256) private s_balances;
     // Owner => Spender => allowance
     mapping(address => mapping(address => uint256)) private s_allowances;
+
+    // Events
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    constructor(string memory _name, string memory _symbol) {
+        s_name = _name;
+        s_symbol = _symbol;
+        i_owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        if (msg.sender != i_owner) {
+            revert ERC20__NotOwner();
+        }
+        _;
+    }
 }
