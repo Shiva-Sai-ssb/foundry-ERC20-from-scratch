@@ -93,4 +93,23 @@ contract ERC20 {
         emit Approval(msg.sender, spender, amount);
         return true;
     }
+
+    function transferFrom(address from, address to, uint256 amount) public returns (bool) {
+        if (from == address(0)) {
+            revert ERC20__TransferFromZeroAddress();
+        }
+        if (s_allowances[from][msg.sender] < amount) {
+            revert ERC20__InsufficientAllowance();
+        }
+        if (to == address(0)) {
+            revert ERC20__TransferToZeroAddress();
+        }
+
+        s_balances[from] -= amount;
+        s_balances[to] += amount;
+        s_allowances[from][msg.sender] -= amount;
+
+        emit Transfer(from, to, amount);
+        return true;
+    }
 }
