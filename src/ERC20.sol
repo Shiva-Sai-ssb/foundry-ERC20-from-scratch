@@ -112,4 +112,27 @@ contract ERC20 {
         emit Transfer(from, to, amount);
         return true;
     }
+
+    function increaseAllowance(address spender, uint256 amount) public returns (bool) {
+        if (s_balances[msg.sender] < amount) {
+            revert ERC20__InsufficientBalance();
+        }
+        if (spender == address(0)) {
+            revert ERC20__ApproveToZeroAddress();
+        }
+
+        s_allowances[msg.sender][spender] += amount;
+        emit Approval(msg.sender, spender, s_allowances[msg.sender][spender]);
+        return true;
+    }
+
+    function decreaseAllowance(address spender, uint256 amount) public returns (bool) {
+        if (spender == address(0)) {
+            revert ERC20__ApproveToZeroAddress();
+        }
+
+        s_allowances[msg.sender][spender] -= amount;
+        emit Approval(msg.sender, spender, s_allowances[msg.sender][spender]);
+        return true;
+    }
 }
