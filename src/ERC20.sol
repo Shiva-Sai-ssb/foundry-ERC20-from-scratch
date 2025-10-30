@@ -156,4 +156,16 @@ contract ERC20 {
     function totalSupply() public view returns (uint256) {
         return s_totalSupply;
     }
+
+    function maxSupply() public pure returns (uint256) {
+        return MAX_SUPPLY;
+    }
+
+    function balanceOf(address _account) public view returns (uint256) {
+        return s_balances[_account];
+    }
+
+    function allowance(address _owner, address _spender) public view returns (uint256) {
+        return s_allowances[_owner][_spender];
+    }
 }
