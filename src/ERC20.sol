@@ -135,4 +135,25 @@ contract ERC20 {
         emit Approval(msg.sender, spender, s_allowances[msg.sender][spender]);
         return true;
     }
+
+    // View Functions
+    function name() public view returns (string memory) {
+        return s_name;
+    }
+
+    function symbol() public view returns (string memory) {
+        return s_symbol;
+    }
+
+    function decimals() public pure returns (uint8) {
+        return DECIMALS;
+    }
+
+    function owner() public view returns (address) {
+        return i_owner;
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return s_totalSupply;
+    }
 }
