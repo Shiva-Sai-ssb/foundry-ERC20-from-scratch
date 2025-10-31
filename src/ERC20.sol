@@ -42,97 +42,101 @@ contract ERC20 {
     }
 
     // Public Functions
-    function mint(address to, uint256 amount) public onlyOwner {
-        if (to == address(0)) {
+    function mint(address _to, uint256 _amount) public onlyOwner {
+        if (_to == address(0)) {
             revert ERC20__MintToZeroAddress();
         }
-        if (s_totalSupply + amount > MAX_SUPPLY) {
+        if (s_totalSupply + _amount > MAX_SUPPLY) {
             revert ERC20__MaxSupplyExceeded();
         }
 
-        s_totalSupply += amount;
-        s_balances[to] += amount;
+        s_totalSupply += _amount;
+        s_balances[_to] += _amount;
 
-        emit Transfer(address(0), to, amount);
+        emit Transfer(address(0), _to, _amount);
     }
 
-    function burn(uint256 amount) public {
-        if (s_balances[msg.sender] < amount) {
+    function burn(uint256 _amount) public {
+        if (s_balances[msg.sender] < _amount) {
             revert ERC20__InsufficientBalance();
         }
 
-        s_balances[msg.sender] -= amount;
-        s_totalSupply -= amount;
-        emit Transfer(msg.sender, address(0), amount);
+        s_balances[msg.sender] -= _amount;
+        s_totalSupply -= _amount;
+        emit Transfer(msg.sender, address(0), _amount);
     }
 
-    function transfer(address to, uint256 amount) public returns (bool) {
-        if (s_balances[msg.sender] < amount) {
-            revert ERC20__InsufficientBalance();
-        }
-        if (to == address(0)) {
+    function transfer(address _to, uint256 _amount) public returns (bool) {
+        if (_to == address(0)) {
             revert ERC20__TransferToZeroAddress();
         }
+        if (s_balances[msg.sender] < _amount) {
+            revert ERC20__InsufficientBalance();
+        }
 
-        s_balances[msg.sender] -= amount;
-        s_balances[to] += amount;
+        s_balances[msg.sender] -= _amount;
+        s_balances[_to] += _amount;
 
-        emit Transfer(msg.sender, to, amount);
+        emit Transfer(msg.sender, _to, _amount);
         return true;
     }
 
-    function approve(address spender, uint256 amount) public returns (bool) {
-        if (s_balances[msg.sender] < amount) {
-            revert ERC20__InsufficientBalance();
-        }
-        if (spender == address(0)) {
+    function approve(address _spender, uint256 _amount) public returns (bool) {
+        if (_spender == address(0)) {
             revert ERC20__ApproveToZeroAddress();
         }
 
-        s_allowances[msg.sender][spender] = amount;
-        emit Approval(msg.sender, spender, amount);
+        s_allowances[msg.sender][_spender] = _amount;
+        emit Approval(msg.sender, _spender, _amount);
         return true;
     }
 
-    function transferFrom(address from, address to, uint256 amount) public returns (bool) {
-        if (from == address(0)) {
+    function transferFrom(address _from, address _to, uint256 _amount) public returns (bool) {
+        if (_from == address(0)) {
             revert ERC20__TransferFromZeroAddress();
         }
-        if (s_allowances[from][msg.sender] < amount) {
-            revert ERC20__InsufficientAllowance();
-        }
-        if (to == address(0)) {
+        if (_to == address(0)) {
             revert ERC20__TransferToZeroAddress();
         }
-
-        s_balances[from] -= amount;
-        s_balances[to] += amount;
-        s_allowances[from][msg.sender] -= amount;
-
-        emit Transfer(from, to, amount);
-        return true;
-    }
-
-    function increaseAllowance(address spender, uint256 amount) public returns (bool) {
-        if (s_balances[msg.sender] < amount) {
+        if (s_balances[_from] < _amount) {
             revert ERC20__InsufficientBalance();
         }
-        if (spender == address(0)) {
-            revert ERC20__ApproveToZeroAddress();
+
+        uint256 currentAllowance = s_allowances[_from][msg.sender];
+        if (currentAllowance < _amount) {
+            revert ERC20__InsufficientAllowance();
         }
 
-        s_allowances[msg.sender][spender] += amount;
-        emit Approval(msg.sender, spender, s_allowances[msg.sender][spender]);
+        s_balances[_from] -= _amount;
+        s_balances[_to] += _amount;
+        s_allowances[_from][msg.sender] = currentAllowance - _amount;
+
+        emit Transfer(_from, _to, _amount);
         return true;
     }
 
-    function decreaseAllowance(address spender, uint256 amount) public returns (bool) {
-        if (spender == address(0)) {
+    function increaseAllowance(address _spender, uint256 _amount) public returns (bool) {
+        if (_spender == address(0)) {
             revert ERC20__ApproveToZeroAddress();
         }
 
-        s_allowances[msg.sender][spender] -= amount;
-        emit Approval(msg.sender, spender, s_allowances[msg.sender][spender]);
+        s_allowances[msg.sender][_spender] += _amount;
+        emit Approval(msg.sender, _spender, s_allowances[msg.sender][_spender]);
+        return true;
+    }
+
+    function decreaseAllowance(address _spender, uint256 _amount) public returns (bool) {
+        if (_spender == address(0)) {
+            revert ERC20__ApproveToZeroAddress();
+        }
+
+        uint256 currentAllowance = s_allowances[msg.sender][_spender];
+        if (currentAllowance < _amount) {
+            revert ERC20__InsufficientAllowance();
+        }
+
+        s_allowances[msg.sender][_spender] = currentAllowance - _amount;
+        emit Approval(msg.sender, _spender, s_allowances[msg.sender][_spender]);
         return true;
     }
 
