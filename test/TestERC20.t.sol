@@ -241,4 +241,177 @@ contract TestERC20 is Test {
         bool success = erc20.approve(USER2, 100);
         assertTrue(success);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                        TRANSFER-FROM FUNCTION TESTS
+    //////////////////////////////////////////////////////////////*/
+
+    function testTransferFromRevertsIfFromAddressIsZeroAddress() external {
+        vm.prank(USER2);
+        vm.expectRevert(ERC20.ERC20__TransferFromZeroAddress.selector);
+        erc20.transferFrom(address(0), USER3, 50);
+    }
+
+    function testTransferFromRevertsIfToAddressIsZeroAddress() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER2);
+        vm.expectRevert(ERC20.ERC20__TransferToZeroAddress.selector);
+        erc20.transferFrom(USER1, address(0), 50);
+    }
+
+    function testTransferFromRevertsIfFromAddressDoesNotHaveEnoughBalance() external {
+        vm.prank(USER1);
+        vm.expectRevert(ERC20.ERC20__InsufficientBalance.selector);
+        erc20.transferFrom(USER1, USER3, 100);
+    }
+
+    function testTransferFromRevertsIfSpenderDoesNotHaveEnoughAllowance() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER2);
+        vm.expectRevert(ERC20.ERC20__InsufficientAllowance.selector);
+        erc20.transferFrom(USER1, USER3, 120);
+    }
+
+    function testTransferFromUpdatesBalancesCorrectly() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER2);
+        erc20.transferFrom(USER1, USER3, 50);
+
+        assertEq(erc20.balanceOf(USER1), 150);
+        assertEq(erc20.balanceOf(USER3), 50);
+    }
+
+    function testTransferFromUpdatesAllowanceAfterSpending() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER2);
+        erc20.transferFrom(USER1, USER3, 50);
+
+        assertEq(erc20.allowance(USER1, USER2), 50);
+    }
+
+    function testTransferFromEmitsTransferEvent() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER2);
+        vm.expectEmit(true, true, false, true, address(erc20));
+        emit Transfer(USER1, USER3, 50);
+        erc20.transferFrom(USER1, USER3, 50);
+    }
+
+    function testTransferFromReturnsTrue() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER2);
+        bool success = erc20.transferFrom(USER1, USER3, 50);
+        assertTrue(success);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                    INCREASE/DECREASE ALLOWANCE TESTS
+    //////////////////////////////////////////////////////////////*/
+
+    function testIncreaseAllowanceRevertsIfSpenderIsZeroAddress() external {
+        vm.prank(USER1);
+        vm.expectRevert(ERC20.ERC20__ApproveToZeroAddress.selector);
+        erc20.increaseAllowance(address(0), 100);
+    }
+
+    function testIncreaseAllowanceUpdatesAllowanceCorrectly() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER1);
+        erc20.increaseAllowance(USER2, 50);
+        assertEq(erc20.allowance(USER1, USER2), 150);
+    }
+
+    function testIncreaseAllowanceEmitsApprovalEvent() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER1);
+        vm.expectEmit(true, true, false, true, address(erc20));
+        emit Approval(USER1, USER2, 150);
+        erc20.increaseAllowance(USER2, 50);
+    }
+
+    function testIncreaseAllowanceReturnsTrue() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER1);
+        bool success = erc20.increaseAllowance(USER2, 50);
+        assertTrue(success);
+    }
+
+    function testDecreaseAllowanceRevertsIfSpenderIsZeroAddress() external {
+        vm.prank(USER1);
+        vm.expectRevert(ERC20.ERC20__ApproveToZeroAddress.selector);
+        erc20.decreaseAllowance(address(0), 100);
+    }
+
+    function testDecreaseAllowanceRevertsIfInsufficientAllowance() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 100);
+
+        vm.prank(USER1);
+        vm.expectRevert(ERC20.ERC20__InsufficientAllowance.selector);
+        erc20.decreaseAllowance(USER2, 150);
+    }
+
+    function testDecreaseAllowanceUpdatesAllowanceCorrectly() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 200);
+
+        vm.prank(USER1);
+        erc20.decreaseAllowance(USER2, 50);
+        assertEq(erc20.allowance(USER1, USER2), 150);
+    }
+
+    function testDecreaseAllowanceEmitsApprovalEvent() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 200);
+
+        vm.prank(USER1);
+        vm.expectEmit(true, true, false, true, address(erc20));
+        emit Approval(USER1, USER2, 150);
+        erc20.decreaseAllowance(USER2, 50);
+    }
+
+    function testDecreaseAllowanceReturnsTrue() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 200);
+
+        vm.prank(USER1);
+        bool success = erc20.decreaseAllowance(USER2, 50);
+        assertTrue(success);
+    }
 }
