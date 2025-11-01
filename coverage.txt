@@ -1,0 +1,65 @@
+Compiling 23 files with Solc 0.8.28
+Solc 0.8.28 finished in 1.17s
+Compiler run successful!
+Analysing contracts...
+Running tests...
+
+Ran 45 tests for test/TestERC20.t.sol:TestERC20
+[PASS] testAllowanceShowsCorrectly() (gas: 26339)
+[PASS] testAnyoneCanBurnTheirOwnTokens() (gas: 50372)
+[PASS] testApproveCanBeCalledWithoutBalance() (gas: 40807)
+[PASS] testApproveEmitsApprovalEvent() (gas: 41651)
+[PASS] testApproveReturnsTrue() (gas: 38289)
+[PASS] testApproveRevertsIfSpenderIsZeroAddress() (gas: 12230)
+[PASS] testApproveUpdatesAllowanceCorrectly() (gas: 48309)
+[PASS] testBalanceAndTotalSupplyUpdateCorrectlyAfterBurning() (gas: 52869)
+[PASS] testBalanceOfRecipientIncreasesAfterMinting() (gas: 47496)
+[PASS] testBalanceOfShowsCorrectly() (gas: 33810)
+[PASS] testBurnFunctionChecksIfCallerHasEnoughBalance() (gas: 13831)
+[PASS] testBurnFunctionEmitsTransferEvent() (gas: 51786)
+[PASS] testCannotMintToZeroAddress() (gas: 12074)
+[PASS] testDecimals() (gas: 5857)
+[PASS] testDecreaseAllowanceEmitsApprovalEvent() (gas: 47437)
+[PASS] testDecreaseAllowanceReturnsTrue() (gas: 44074)
+[PASS] testDecreaseAllowanceRevertsIfInsufficientAllowance() (gas: 41581)
+[PASS] testDecreaseAllowanceRevertsIfSpenderIsZeroAddress() (gas: 12165)
+[PASS] testDecreaseAllowanceUpdatesAllowanceCorrectly() (gas: 46473)
+[PASS] testIncreaseAllowanceEmitsApprovalEvent() (gas: 47258)
+[PASS] testIncreaseAllowanceReturnsTrue() (gas: 43894)
+[PASS] testIncreaseAllowanceRevertsIfSpenderIsZeroAddress() (gas: 12231)
+[PASS] testIncreaseAllowanceUpdatesAllowanceCorrectly() (gas: 46383)
+[PASS] testMaxSupplyOfTokensSetsCorrectly() (gas: 5817)
+[PASS] testMintingFunctionEmitsTransferEvent() (gas: 46905)
+[PASS] testOnlyOwnerCanCallMintFunction() (gas: 12218)
+[PASS] testOwnerIsSetCorrectly() (gas: 8062)
+[PASS] testTokenName() (gas: 12915)
+[PASS] testTokenSymbol() (gas: 12980)
+[PASS] testTotalSupplyDoesNotExceedMaxSupply() (gas: 17656)
+[PASS] testTotalSupplyIncreasesAfterMinting() (gas: 46062)
+[PASS] testTotalSupplyShowsCorrectly() (gas: 13484)
+[PASS] testTransferEmitsTransferEvent() (gas: 76828)
+[PASS] testTransferFromEmitsTransferEvent() (gas: 107146)
+[PASS] testTransferFromReturnsTrue() (gas: 103785)
+[PASS] testTransferFromRevertsIfFromAddressDoesNotHaveEnoughBalance() (gas: 17069)
+[PASS] testTransferFromRevertsIfFromAddressIsZeroAddress() (gas: 14641)
+[PASS] testTransferFromRevertsIfSpenderDoesNotHaveEnoughAllowance() (gas: 78668)
+[PASS] testTransferFromRevertsIfToAddressIsZeroAddress() (gas: 76006)
+[PASS] testTransferFromUpdatesAllowanceAfterSpending() (gas: 106205)
+[PASS] testTransferFromUpdatesBalancesCorrectly() (gas: 107458)
+[PASS] testTransferReturnsTrue() (gas: 73466)
+[PASS] testTransferRevertsIfSenderDoesNotHaveEnoughBalance() (gas: 16579)
+[PASS] testTransferRevertsIfToAddressIsZeroAddress() (gas: 46569)
+[PASS] testTransferUpdatesBalancesCorrectly() (gas: 77143)
+Suite result: ok. 45 passed; 0 failed; 0 skipped; finished in 19.08ms (90.02ms CPU time)
+
+Ran 1 test suite in 21.26ms (19.08ms CPU time): 45 tests passed, 0 failed, 0 skipped (45 total tests)
+
+╭--------------------------+-----------------+-----------------+-----------------+-----------------╮
+| File                     | % Lines         | % Statements    | % Branches      | % Funcs         |
++==================================================================================================+
+| script/DeployERC20.s.sol | 100.00% (15/15) | 100.00% (15/15) | 100.00% (1/1)   | 100.00% (1/1)   |
+|--------------------------+-----------------+-----------------+-----------------+-----------------|
+| src/ERC20.sol            | 100.00% (82/82) | 100.00% (66/66) | 100.00% (14/14) | 100.00% (17/17) |
+|--------------------------+-----------------+-----------------+-----------------+-----------------|
+| Total                    | 100.00% (97/97) | 100.00% (81/81) | 100.00% (15/15) | 100.00% (18/18) |
+╰--------------------------+-----------------+-----------------+-----------------+-----------------╯
