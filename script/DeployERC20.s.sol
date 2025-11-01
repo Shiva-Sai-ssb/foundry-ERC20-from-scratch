@@ -5,9 +5,9 @@ import {ERC20} from "src/ERC20.sol";
 import {Script, console} from "forge-std/Script.sol";
 
 contract DeployERC20 is Script {
-    string public constant TOKEN_NAME = "Shiva Sai";
-    string public constant TOKEN_SYMBOL = "SSB";
-    uint256 public constant INITIAL_SUPPLY = 1000 * 10 ** 18;
+    string public constant TOKEN_NAME = "Shiva Sai"; // Token name
+    string public constant TOKEN_SYMBOL = "SSB"; // Token symbol
+    uint256 public constant INITIAL_SUPPLY = 1000 * 10 ** 18; // 1000 tokens with 18 decimals
 
     function run() external returns (ERC20) {
         vm.startBroadcast();
@@ -18,16 +18,16 @@ contract DeployERC20 is Script {
         console.log("Symbol:", TOKEN_SYMBOL);
 
         if (INITIAL_SUPPLY > 0) {
-            token.mint(msg.sender, INITIAL_SUPPLY);
+            token.mint(token.owner(), INITIAL_SUPPLY);
             console.log("Minted initial supply:", INITIAL_SUPPLY);
-            console.log("Minted to:", msg.sender);
+            console.log("Minted to:", token.owner());
         }
 
         vm.stopBroadcast();
 
         console.log("Deployment complete.");
         console.log("Total supply:", token.totalSupply());
-        console.log("Owner balance:", token.balanceOf(msg.sender));
+        console.log("Owner balance:", token.balanceOf(token.owner()));
 
         return token;
     }
