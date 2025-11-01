@@ -152,4 +152,93 @@ contract TestERC20 is Test {
         emit Transfer(USER1, address(0), 50);
         erc20.burn(50);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                           TRANSFER FUNCTION TESTS
+    //////////////////////////////////////////////////////////////*/
+
+    function testTransferRevertsIfToAddressIsZeroAddress() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 100);
+
+        vm.prank(USER1);
+        vm.expectRevert(ERC20.ERC20__TransferToZeroAddress.selector);
+        erc20.transfer(address(0), 50);
+    }
+
+    function testTransferRevertsIfSenderDoesNotHaveEnoughBalance() external {
+        vm.prank(USER1);
+        vm.expectRevert(ERC20.ERC20__InsufficientBalance.selector);
+        erc20.transfer(USER2, 100);
+    }
+
+    function testTransferUpdatesBalancesCorrectly() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        erc20.transfer(USER2, 50);
+
+        assertEq(erc20.balanceOf(USER1), 150);
+        assertEq(erc20.balanceOf(USER2), 50);
+    }
+
+    function testTransferEmitsTransferEvent() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        vm.expectEmit(true, true, false, true, address(erc20));
+        emit Transfer(USER1, USER2, 50);
+        erc20.transfer(USER2, 50);
+    }
+
+    function testTransferReturnsTrue() external {
+        vm.prank(OWNER);
+        erc20.mint(USER1, 200);
+
+        vm.prank(USER1);
+        bool success = erc20.transfer(USER2, 50);
+        assertTrue(success);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                           APPROVE FUNCTION TESTS
+    //////////////////////////////////////////////////////////////*/
+
+    function testApproveRevertsIfSpenderIsZeroAddress() external {
+        vm.prank(USER1);
+        vm.expectRevert(ERC20.ERC20__ApproveToZeroAddress.selector);
+        erc20.approve(address(0), 100);
+    }
+
+    function testApproveCanBeCalledWithoutBalance() external {
+        vm.prank(USER1);
+        bool success = erc20.approve(USER2, 1000);
+        assertTrue(success);
+        assertEq(erc20.allowance(USER1, USER2), 1000);
+    }
+
+    function testApproveUpdatesAllowanceCorrectly() external {
+        vm.prank(USER1);
+        erc20.approve(USER2, 500);
+        assertEq(erc20.allowance(USER1, USER2), 500);
+
+        vm.prank(USER1);
+        erc20.approve(USER2, 300);
+        assertEq(erc20.allowance(USER1, USER2), 300);
+    }
+
+    function testApproveEmitsApprovalEvent() external {
+        vm.prank(USER1);
+        vm.expectEmit(true, true, false, true, address(erc20));
+        emit Approval(USER1, USER2, 100);
+        erc20.approve(USER2, 100);
+    }
+
+    function testApproveReturnsTrue() external {
+        vm.prank(USER1);
+        bool success = erc20.approve(USER2, 100);
+        assertTrue(success);
+    }
 }
